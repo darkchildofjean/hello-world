@@ -1,0 +1,17 @@
+#!/bin/bash
+
+rm -rf /var/tmp/raw_file_types
+touch /var/tmp/raw_file_types
+find /usr/bin -type f -exec file {} >> /var/tmp/raw_file_types \;
+output=/var/tmp/raw_file_types
+
+rm -r /var/tmp/file_types
+touch /var/tmp/file_types
+while read -r line
+do
+    echo $line | awk -F: '{print $2}' | awk -F, '{print $1}' | sed -e 's!^[ ]*!!' >> /var/tmp/file_types 
+done < $output
+
+cat /var/tmp/file_types | sort | uniq
+cat /var/tmp/file_types | sort | uniq | wc -l
+
